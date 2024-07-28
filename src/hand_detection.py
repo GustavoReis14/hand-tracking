@@ -24,12 +24,13 @@ class HandDetection:
 
         hands = []
 
-        for hand in self.__dic_hands.values():
+        for key in self.__dic_hands.keys():
+            hand = self.__dic_hands[key]
             fingers_up = []
             for finger in hand.get_fingers():
                 fingers_up.append(finger.check_got_up())
-
-            if HandOption.LEFT_HAND:
+            
+            if key == HandOption.LEFT_HAND.value:
                 fingers_up.reverse()
             hands.append(fingers_up)
         
