@@ -48,7 +48,12 @@ class FingerDetection:
         self.coordinates = []
 
     def check_got_up(self):
+        if self.coordinates == []:
+            return False
+
         if self.name == FingerOption.THUMB:
             self.isUp = True if self.coordinates[3][0] <= self.coordinates[2][0] else False
         else:
             self.isUp = True if self.coordinates[3][1] < self.coordinates[2][1] else False
+        
+        return self.isUp

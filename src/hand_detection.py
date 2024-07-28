@@ -10,7 +10,7 @@ resolution_y = 720 / 2
 
 class HandDetection:
     def __init__(self, hand_option: HandOption):
-        self.isHandDetected = False
+        self.is_hand_detected = False
         self.hand_option = hand_option
         self.mp_hands = mp.solutions.hands
         self.mp_draw = mp.solutions.drawing_utils
@@ -25,25 +25,44 @@ class HandDetection:
         }
 
     def get_finger_values(self):
-        print(self.hand_option.value)
+        if self.is_hand_detected == False:
+            return
+
+        fingers_up = []
+
+        for finger in self.fingers.values():
+            fingers_up.append(finger.check_got_up())
+        
+        return fingers_up
+
+    
+    def clear_last_fingers_coordinates(self):
+        for finger in self.fingers.values():
+            finger.reset_coordinates()
 
     def process(self, frame):
         result = self.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+
         if result.multi_hand_landmarks:
-            self.isHandDetected = True
+            self.is_hand_detected = True
+            self.clear_last_fingers_coordinates()
+
             for hand_side, landmark in zip(result.multi_handedness, result.multi_hand_landmarks):
                 if(hand_side.classification[0].label != self.hand_option.value):
                     continue
+
                 for index, point in enumerate(landmark.landmark):
                     x, y, z = int(point.x * resolution_x), int(point.y * resolution_y), int(point.z * resolution_x)
+
                     if index == 0:
                         self.wrist.append((x, y, z))
                     else:
                         finger = self.fingers[FingerDetection.finger_detection(index)]
                         finger.add_coordinate((x, y, z))
+
                 self.mp_draw.draw_landmarks(frame, landmark, self.mp_hands.HAND_CONNECTIONS)
         else:
-            self.isHandDetected = False
+            self.is_hand_detected = False
 
                     
                         

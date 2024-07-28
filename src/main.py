@@ -1,8 +1,8 @@
 import cv2
 
-from src.hand_detection import HandDetection
-from src.hand_option import HandOption
-from src.finger_option import FingerOption
+from hand_detection import HandDetection
+from hand_option import HandOption
+from finger_option import FingerOption
 
 resolution_x = 1280 / 2
 resolution_y = 720 / 2
@@ -18,12 +18,11 @@ while True:
     ret, frame = cap.read()
     frame = cv2.flip(frame, 1)
     
-    hand_detector.fingers[FingerOption.THUMB].reset_coordinates()
     hand_detector.process(frame)
+    fingers = hand_detector.get_finger_values()
+    if fingers:
+        print(fingers)
     
-    if hand_detector.isHandDetected:
-        hand_detector.fingers[FingerOption.THUMB].check_got_up()
-        print(hand_detector.fingers[FingerOption.THUMB].isUp)
     cv2.imshow('Hand Detection', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
