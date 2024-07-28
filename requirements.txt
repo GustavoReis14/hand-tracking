@@ -1,5 +1,2 @@
-pip install mediapipe
-pip install opencv-python
-
-export PYTHONPATH=src:$PYTHONPATH
-python3 main.py
+mediapipe
+opencv-python
