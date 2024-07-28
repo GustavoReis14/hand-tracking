@@ -5,18 +5,21 @@ from hand_option import HandOption
 from finger_option import FingerOption
 from finger_detection import FingerDetection
 
-resolution_x = 1280 / 2
-resolution_y = 720 / 2
-
 class HandDetection:
-    def __init__(self, hand_option: HandOption):
-        self.is_hand_detected = False
-        self.hand_option = hand_option
-        self.mp_hands = mp.solutions.hands
-        self.mp_draw = mp.solutions.drawing_utils
-        self.hands = self.mp_hands.Hands()
-        self.wrist = []
-        self.fingers = {
+    def __init__(self, hand_option: HandOption, RESOLUTION_X, RESOLUTION_Y):
+        self.__RESOLUTION_X = RESOLUTION_X
+        self.__RESOLUTION_Y = RESOLUTION_Y
+        
+        self.__is_hand_detected = False
+        self.__hand_option = hand_option
+
+        #Media Pipe
+        self.__mp_hands = mp.solutions.hands
+        self.__mp_draw = mp.solutions.drawing_utils
+        self.__hands = self.__mp_hands.Hands()
+
+        self.__wrist = []
+        self.__fingers = {
             FingerOption.THUMB: FingerDetection(FingerOption.THUMB),
             FingerOption.INDEX_FINGER: FingerDetection(FingerOption.INDEX_FINGER),
             FingerOption.MIDDLE_FINGER: FingerDetection(FingerOption.MIDDLE_FINGER),
@@ -25,46 +28,43 @@ class HandDetection:
         }
 
     def get_finger_values(self):
-        if self.is_hand_detected == False:
+        if self.__is_hand_detected == False:
             return
 
         fingers_up = []
 
-        for finger in self.fingers.values():
+        for finger in self.__fingers.values():
             fingers_up.append(finger.check_got_up())
         
         return fingers_up
 
-    
-    def clear_last_fingers_coordinates(self):
-        for finger in self.fingers.values():
-            finger.reset_coordinates()
 
     def process(self, frame):
-        result = self.hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        result = self.__hands.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
 
         if result.multi_hand_landmarks:
-            self.is_hand_detected = True
-            self.clear_last_fingers_coordinates()
+            self.__is_hand_detected = True
+            self.__clear_last_fingers_coordinates()
 
             for hand_side, landmark in zip(result.multi_handedness, result.multi_hand_landmarks):
-                if(hand_side.classification[0].label != self.hand_option.value):
+                if(hand_side.classification[0].label != self.__hand_option.value):
                     continue
 
                 for index, point in enumerate(landmark.landmark):
-                    x, y, z = int(point.x * resolution_x), int(point.y * resolution_y), int(point.z * resolution_x)
+                    x, y, z = int(point.x * self.__RESOLUTION_X), int(point.y * self.__RESOLUTION_Y), int(point.z * self.__RESOLUTION_X)
 
                     if index == 0:
-                        self.wrist.append((x, y, z))
+                        self.__wrist.append((x, y, z))
                     else:
-                        finger = self.fingers[FingerDetection.finger_detection(index)]
+                        finger = self.__fingers[FingerDetection.finger_detection(index)]
                         finger.add_coordinate((x, y, z))
 
-                self.mp_draw.draw_landmarks(frame, landmark, self.mp_hands.HAND_CONNECTIONS)
+                self.__mp_draw.draw_landmarks(frame, landmark, self.__mp_hands.HAND_CONNECTIONS)
         else:
-            self.is_hand_detected = False
+            self.__is_hand_detected = False
 
                     
-                        
-                    
+    def __clear_last_fingers_coordinates(self):
+        for finger in self.__fingers.values():
+            finger.reset_coordinates()      
 

@@ -2,10 +2,10 @@ from finger_option import FingerOption
 
 class FingerDetection:
     def __init__(self, name: FingerOption):
-        self.name = name
-        self.coordinates = []
-        self.finger_init = self.init_finger(name)
-        self.isUp = False
+        self.__name = name
+        self.__coordinates = []
+        self.__finger_init = self.__init_finger(name)
+        self.__isUp = False
 
     @staticmethod
     def finger_detection(landmark):
@@ -31,8 +31,25 @@ class FingerDetection:
             19:FingerOption.LITTLE_FINGER,
             20:FingerOption.LITTLE_FINGER,
         }[landmark]
+    
+    def add_coordinate(self, x):
+        self.__coordinates.append(x)
 
-    def init_finger(self, option):
+    def reset_coordinates(self):
+        self.__coordinates = []
+
+    def check_got_up(self):
+        if self.__coordinates == []:
+            return False
+
+        if self.__name == FingerOption.THUMB:
+            self.__isUp = True if self.__coordinates[3][0] <= self.__coordinates[2][0] else False
+        else:
+            self.__isUp = True if self.__coordinates[3][1] < self.__coordinates[2][1] else False
+        
+        return self.__isUp
+
+    def __init_finger(self, option):
         return {
             FingerOption.THUMB: 1,
             FingerOption.INDEX_FINGER: 5,
@@ -40,20 +57,3 @@ class FingerDetection:
             FingerOption.RING_FINGER: 13,
             FingerOption.LITTLE_FINGER: 17,
         }[option]
-    
-    def add_coordinate(self, x):
-        self.coordinates.append(x)
-
-    def reset_coordinates(self):
-        self.coordinates = []
-
-    def check_got_up(self):
-        if self.coordinates == []:
-            return False
-
-        if self.name == FingerOption.THUMB:
-            self.isUp = True if self.coordinates[3][0] <= self.coordinates[2][0] else False
-        else:
-            self.isUp = True if self.coordinates[3][1] < self.coordinates[2][1] else False
-        
-        return self.isUp

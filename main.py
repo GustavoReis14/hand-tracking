@@ -2,14 +2,14 @@ import cv2
 
 from src import HandDetection, HandOption
 
-resolution_x = 1280 / 2
-resolution_y = 720 / 2
+RESOLUTION_X = 1280 / 2
+RESOLUTION_Y = 720 / 2
 
 cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, resolution_x)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution_y)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, RESOLUTION_X)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, RESOLUTION_Y)
 
-hand_detector = HandDetection(HandOption.RIGHT_HAND)
+hand_detector = HandDetection(HandOption.RIGHT_HAND, RESOLUTION_X, RESOLUTION_Y)
 
 
 while True:
