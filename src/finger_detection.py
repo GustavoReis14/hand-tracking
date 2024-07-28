@@ -1,8 +1,10 @@
 from finger_option import FingerOption
+from hand_option import HandOption
 
 class FingerDetection:
-    def __init__(self, name: FingerOption):
+    def __init__(self, hand: HandOption, name: FingerOption):
         self.__name = name
+        self.__hand = hand
         self.__coordinates = []
         self.__finger_init = self.__init_finger(name)
         self.__isUp = False
@@ -43,7 +45,10 @@ class FingerDetection:
             return False
 
         if self.__name == FingerOption.THUMB:
-            self.__isUp = True if self.__coordinates[3][0] <= self.__coordinates[2][0] else False
+            if self.__hand == HandOption.RIGHT_HAND:
+                self.__isUp = True if self.__coordinates[3][0] <= self.__coordinates[2][0] else False
+            else:
+                self.__isUp = True if self.__coordinates[3][0] >= self.__coordinates[2][0] else False
         else:
             self.__isUp = True if self.__coordinates[3][1] < self.__coordinates[2][1] else False
         

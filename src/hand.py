@@ -13,11 +13,11 @@ class Hand(Thread):
         self.name = name
         self.__wrist = []
         self.__fingers = {
-            FingerOption.THUMB: FingerDetection(FingerOption.THUMB),
-            FingerOption.INDEX_FINGER: FingerDetection(FingerOption.INDEX_FINGER),
-            FingerOption.MIDDLE_FINGER: FingerDetection(FingerOption.MIDDLE_FINGER),
-            FingerOption.RING_FINGER: FingerDetection(FingerOption.RING_FINGER),
-            FingerOption.LITTLE_FINGER: FingerDetection(FingerOption.LITTLE_FINGER),
+            FingerOption.THUMB: FingerDetection(name, FingerOption.THUMB),
+            FingerOption.INDEX_FINGER: FingerDetection(name, FingerOption.INDEX_FINGER),
+            FingerOption.MIDDLE_FINGER: FingerDetection(name, FingerOption.MIDDLE_FINGER),
+            FingerOption.RING_FINGER: FingerDetection(name, FingerOption.RING_FINGER),
+            FingerOption.LITTLE_FINGER: FingerDetection(name, FingerOption.LITTLE_FINGER),
         }
         self.__landmark = []
     

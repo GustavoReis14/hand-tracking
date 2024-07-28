@@ -28,6 +28,9 @@ class HandDetection:
             fingers_up = []
             for finger in hand.get_fingers():
                 fingers_up.append(finger.check_got_up())
+
+            if HandOption.LEFT_HAND:
+                fingers_up.reverse()
             hands.append(fingers_up)
         
         return hands
