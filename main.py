@@ -1,8 +1,6 @@
 import cv2
 
-from hand_detection import HandDetection
-from hand_option import HandOption
-from finger_option import FingerOption
+from src import HandDetection, HandOption
 
 resolution_x = 1280 / 2
 resolution_y = 720 / 2
